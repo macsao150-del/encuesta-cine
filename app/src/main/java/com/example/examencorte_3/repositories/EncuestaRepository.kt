@@ -1,35 +1,34 @@
 package com.example.examencorte_3.repositories
 
-import com.example.examencorte_3.models.Opciones
-import com.example.examencorte_3.models.Preguntas
-import com.example.examencorte_3.models.Respuestas
 import io.github.jan.supabase.SupabaseClient
 import io.github.jan.supabase.postgrest.postgrest
+import io.github.jan.supabase.postgrest.query.Columns
 
 class EncuestaRepository(private val supabase: SupabaseClient) {
 
-
-    // Obtener las preguntas de una encuesta
-    suspend fun getPreguntas() = supabase.postgrest["Preguntas"]
-        .select {
+    // Obtener una pregunta de una encuesta
+    suspend fun getPregunta(id: Long): String? {
+        val result = supabase.postgrest["Preguntas"].select(Columns.raw("pregunta")) {
             filter {
-                eq("id_encuesta", 1)
+                eq("id_pregunta", id)
             }
         }
-        .decodeList<Preguntas>()
-
+        val data = result.decodeList<Map<String, String>>()
+        return data.firstOrNull()?.get("pregunta")
+    }
 
     // Obtener las opciones de una pregunta
-    suspend fun getOpciones(id_pregunta: Long) = supabase.postgrest["Opciones"]
-        .select {
+    suspend fun getOpcion(id: Long): String? {
+        val result = supabase.postgrest["Opciones"].select(Columns.raw("opcion")) {
             filter{
-                eq("id_pregunta", id_pregunta)
+                eq("id_opcion", id)
             }
         }
-        .decodeList<Opciones>()
+        val data = result.decodeList<Map<String, String>>()
+        return data.firstOrNull()?.get("opcion")
+    }
 
-
-    // Guardar una respuesta
+    // Guardar una respuesta (aun no esta listo ni en uso)
     suspend fun guardarRespuesta(id_pregunta: Long, id_opcion: Long) = supabase.postgrest["Respuestas"]
             .insert(
                 mapOf(
