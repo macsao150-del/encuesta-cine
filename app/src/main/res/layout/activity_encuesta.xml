@@ -88,6 +88,7 @@
                     android:textColor="#FFFFFF" />
 
                 <RadioGroup
+                    android:id="@+id/rgPre1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -126,6 +127,7 @@
                     android:textColor="#FFFFFF" />
 
                 <RadioGroup
+                    android:id="@+id/rgPre2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -159,6 +161,7 @@
                     android:textColor="#FFFFFF" />
 
                 <RadioGroup
+                    android:id="@+id/rgPre3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -192,6 +195,7 @@
                     android:textColor="#FFFFFF" />
 
                 <RadioGroup
+                    android:id="@+id/rgPre4"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
@@ -225,8 +229,9 @@
                     android:textColor="#FFFFFF" />
 
                 <RadioGroup
+                    android:id="@+id/rgPre5"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" >
+                    android:layout_height="match_parent">
 
                     <RadioButton
                         android:id="@+id/btnRes1Pre5"

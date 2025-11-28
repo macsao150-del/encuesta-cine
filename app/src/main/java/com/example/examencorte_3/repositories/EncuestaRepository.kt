@@ -1,6 +1,8 @@
 package com.example.examencorte_3.repositories
 
+import com.example.examencorte_3.repositories.SupabaseProvider.client
 import io.github.jan.supabase.SupabaseClient
+import io.github.jan.supabase.postgrest.from
 import io.github.jan.supabase.postgrest.postgrest
 import io.github.jan.supabase.postgrest.query.Columns
 
@@ -28,12 +30,19 @@ class EncuestaRepository(private val supabase: SupabaseClient) {
         return data.firstOrNull()?.get("opcion")
     }
 
-    // Guardar una respuesta (aun no esta listo ni en uso)
-    suspend fun guardarRespuesta(id_pregunta: Long, id_opcion: Long) = supabase.postgrest["Respuestas"]
-            .insert(
-                mapOf(
-                    "id_pregunta" to id_pregunta,
-                    "id_opcion" to id_opcion
-                )
+    // Guardar una respuesta (metodo listo, falta implementarlo en la vista de encuesta)
+    suspend fun insertarRespuesta(idPregunta: Long, idOpcion: Long): Boolean {
+        return try {
+            val data = mapOf(
+                "id_pregunta" to idPregunta,
+                "id_opcion" to idOpcion
             )
+            supabase.postgrest["Respuestas"].insert(data)
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
     }
+
+}

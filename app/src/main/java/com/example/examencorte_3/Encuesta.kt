@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -79,6 +80,9 @@ class Encuesta : AppCompatActivity() {
         btnFinalizar.setOnClickListener {
             val intent = Intent(this, Estadistica::class.java)
             startActivity(intent)
+
+            guardarRespuestas()
+
             Toast.makeText(this, "Gracias por responder la encuesta", Toast.LENGTH_SHORT).show()
         }
     }
@@ -162,6 +166,51 @@ class Encuesta : AppCompatActivity() {
     private fun loadTodasLasOpciones() {
         opcionesMap.forEach { (radioButton, opcionId) ->
             loadOpciones(radioButton, opcionId)
+        }
+    }
+
+    private fun guardarRespuestas() {
+        progressBar.visibility = View.VISIBLE
+        CoroutineScope(Dispatchers.IO).launch {
+
+            var todoCorrecto = true
+
+            for ((textView, idPregunta) in preguntasMap) {
+                val parent = textView.parent as View
+                val radioGroupIdName = "rgPre$idPregunta"
+                val radioGroupId = resources.getIdentifier(radioGroupIdName, "id", packageName)
+                val radioGroup = parent.findViewById<RadioGroup>(radioGroupId)
+
+                if (radioGroup == null) {
+                    todoCorrecto = false
+                    continue
+                }
+
+                val selectedId = radioGroup.checkedRadioButtonId
+
+                if (selectedId == -1) {
+                    todoCorrecto = false
+                    continue
+                }
+                val radioButton = findViewById<RadioButton>(selectedId)
+                val idOpcion = opcionesMap[radioButton]
+
+                if (idOpcion != null) {
+                    encuestaRepo.insertarRespuesta(idPregunta, idOpcion)
+                } else {
+                    todoCorrecto = false
+                }
+            }
+            runOnUiThread {
+                progressBar.visibility = View.GONE
+
+                if (todoCorrecto) {
+                    Toast.makeText(this@Encuesta, "Respuestas enviadas correctamente", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(this@Encuesta, Estadistica::class.java))
+                } else {
+                    Toast.makeText(this@Encuesta, "Faltan respuestas", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }
