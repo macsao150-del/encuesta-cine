@@ -47,9 +47,9 @@ class Encuesta : AppCompatActivity() {
 
 
     private val encuestaRepo = EncuestaRepository(SupabaseProvider.client)
-    private val storeViewModel: SharedViewModel by lazy {
-        AppViewModelStore.provider.get(SharedViewModel::class.java)
-    }
+//    private val storeViewModel: SharedViewModel by lazy {
+//        AppViewModelStore.provider.get(SharedViewModel::class.java)
+//    }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,12 +78,7 @@ class Encuesta : AppCompatActivity() {
 
 
         btnFinalizar.setOnClickListener {
-            val intent = Intent(this, Estadistica::class.java)
-            startActivity(intent)
-
             guardarRespuestas()
-
-            Toast.makeText(this, "Gracias por responder la encuesta", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -171,6 +166,7 @@ class Encuesta : AppCompatActivity() {
 
     private fun guardarRespuestas() {
         progressBar.visibility = View.VISIBLE
+        val idEncuestado = System.currentTimeMillis()
         CoroutineScope(Dispatchers.IO).launch {
 
             var todoCorrecto = true
@@ -196,7 +192,7 @@ class Encuesta : AppCompatActivity() {
                 val idOpcion = opcionesMap[radioButton]
 
                 if (idOpcion != null) {
-                    encuestaRepo.insertarRespuesta(idPregunta, idOpcion)
+                    encuestaRepo.insertarRespuesta(idPregunta, idOpcion, idEncuestado)
                 } else {
                     todoCorrecto = false
                 }
@@ -206,7 +202,7 @@ class Encuesta : AppCompatActivity() {
 
                 if (todoCorrecto) {
                     Toast.makeText(this@Encuesta, "Respuestas enviadas correctamente", Toast.LENGTH_SHORT).show()
-                    startActivity(Intent(this@Encuesta, Estadistica::class.java))
+                    startActivity(Intent(this@Encuesta, MainActivity::class.java))
                 } else {
                     Toast.makeText(this@Encuesta, "Faltan respuestas", Toast.LENGTH_SHORT).show()
                 }
@@ -214,3 +210,26 @@ class Encuesta : AppCompatActivity() {
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
